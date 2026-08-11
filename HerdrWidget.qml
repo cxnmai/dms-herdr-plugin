@@ -26,7 +26,7 @@ PluginComponent {
 
             HerdrIcon {
                 size: Theme.iconSize
-                color: herdr.serverRunning ? Theme.primary : Theme.surfaceVariantText
+                color: herdr.serverRunning ? Theme.surfaceText : Theme.surfaceVariantText
                 anchors.verticalCenter: parent.verticalCenter
             }
 
@@ -46,7 +46,7 @@ PluginComponent {
 
             HerdrIcon {
                 size: Theme.iconSize
-                color: herdr.serverRunning ? Theme.primary : Theme.surfaceVariantText
+                color: herdr.serverRunning ? Theme.surfaceText : Theme.surfaceVariantText
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
