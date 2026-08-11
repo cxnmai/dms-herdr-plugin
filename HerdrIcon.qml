@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Effects
 
 import qs.Common
 import qs.Widgets
@@ -20,21 +19,18 @@ Item {
         id: logo
 
         anchors.fill: parent
-        source: Qt.resolvedUrl("assets/herdr.svg")
+        source: Qt.resolvedUrl(Theme.isLightMode
+            ? "assets/herdr.svg" : "assets/herdr-on-dark.svg")
         sourceSize.width: root.size * 2
         sourceSize.height: root.size * 2
         fillMode: Image.PreserveAspectFit
         asynchronous: true
-        visible: false
+        cache: true
+        mipmap: true
+        smooth: true
+        visible: status === Image.Ready
     }
 
-    MultiEffect {
-        anchors.fill: parent
-        source: logo
-        visible: logo.status === Image.Ready
-        colorization: 1
-        colorizationColor: root.color
-    }
 
     StyledText {
         anchors.fill: parent
