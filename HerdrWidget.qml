@@ -8,8 +8,8 @@ PluginComponent {
     id: root
 
     layerNamespacePlugin: "herdr"
-    popoutWidth: 460
-    popoutHeight: 560
+    popoutWidth: 420
+    popoutHeight: 400
 
     readonly property string agentSummary: {
         const count = herdr.agents.length;
@@ -22,19 +22,20 @@ PluginComponent {
 
     horizontalBarPill: Component {
         Row {
-            spacing: Theme.spacingS
+            spacing: Theme.spacingXS
 
             HerdrIcon {
-                size: Theme.iconSize
-                color: herdr.serverRunning ? Theme.surfaceText : Theme.surfaceVariantText
+                size: Math.round(root.iconSize * 0.7)
+                color: herdr.serverRunning ? Theme.widgetIconColor : Theme.surfaceVariantText
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             StyledText {
                 visible: herdr.serverRunning
                 text: root.agentSummary
-                font.pixelSize: Theme.fontSizeMedium
-                color: Theme.surfaceText
+                font.pixelSize: Theme.barTextSize(root.barThickness,
+                    root.barConfig?.fontScale, root.barConfig?.maximizeWidgetText)
+                color: Theme.widgetTextColor
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
@@ -42,19 +43,20 @@ PluginComponent {
 
     verticalBarPill: Component {
         Column {
-            spacing: Theme.spacingXXS
+            spacing: Theme.spacingXS
 
             HerdrIcon {
-                size: Theme.iconSize
-                color: herdr.serverRunning ? Theme.surfaceText : Theme.surfaceVariantText
+                size: Math.round(root.iconSize * 0.7)
+                color: herdr.serverRunning ? Theme.widgetIconColor : Theme.surfaceVariantText
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
             StyledText {
                 visible: herdr.serverRunning
                 text: herdr.agents.length
-                font.pixelSize: Theme.fontSizeSmall
-                color: Theme.surfaceText
+                font.pixelSize: Theme.barTextSize(root.barThickness,
+                    root.barConfig?.fontScale, root.barConfig?.maximizeWidgetText)
+                color: Theme.widgetTextColor
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
@@ -84,22 +86,22 @@ PluginComponent {
         id: stoppedState
 
         Column {
-            spacing: Theme.spacingL
+            spacing: Theme.spacingM
 
             StyledRect {
                 width: parent.width
-                height: stoppedContent.implicitHeight + Theme.spacingXL * 2
+                height: stoppedContent.implicitHeight + Theme.spacingL * 2
                 radius: Theme.cornerRadius
                 color: Theme.surfaceContainerHigh
 
                 Column {
                     id: stoppedContent
-                    width: parent.width - Theme.spacingXL * 2
+                    width: parent.width - Theme.spacingL * 2
                     anchors.centerIn: parent
-                    spacing: Theme.spacingS
+                    spacing: Theme.spacingXS
 
                     HerdrIcon {
-                        size: Theme.iconSizeLarge * 2
+                        size: Theme.iconSizeLarge
                         color: Theme.surfaceVariantText
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
@@ -110,7 +112,7 @@ PluginComponent {
                         horizontalAlignment: Text.AlignHCenter
                         wrapMode: Text.WordWrap
                         color: Theme.surfaceVariantText
-                        font.pixelSize: Theme.fontSizeMedium
+                        font.pixelSize: Theme.fontSizeSmall
                     }
                 }
             }
@@ -145,9 +147,9 @@ PluginComponent {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: stopButton.top
-                anchors.bottomMargin: Theme.spacingM
+                anchors.bottomMargin: Theme.spacingXS
                 clip: true
-                spacing: Theme.spacingS
+                spacing: Theme.spacingXS
                 model: herdr.agents
 
                 delegate: HerdrAgentCard {
