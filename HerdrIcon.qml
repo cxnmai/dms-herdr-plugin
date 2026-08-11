@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Effects
 
 import qs.Common
-import qs.DankCommon.Common
 import qs.Widgets
 
 Item {
@@ -45,7 +44,7 @@ Item {
         visible: logo.status !== Image.Ready
         text: "\u{F1719}"
         color: root.color
-        font.family: Fonts.nerd
+        font.family: "FiraCode Nerd Font"
         font.pixelSize: root.size
         font.weight: Font.Normal
         horizontalAlignment: Text.AlignHCenter
