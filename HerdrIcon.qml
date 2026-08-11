@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 
 import qs.Common
 import qs.Widgets
@@ -16,24 +17,28 @@ Item {
     Accessible.name: "Herdr"
 
     Image {
-        id: assetProbe
+        id: logo
 
+        anchors.fill: parent
         source: Qt.resolvedUrl("assets/herdr.svg")
+        sourceSize.width: root.size * 2
+        sourceSize.height: root.size * 2
+        fillMode: Image.PreserveAspectFit
         asynchronous: true
         visible: false
     }
 
-    DankSVGIcon {
-        anchors.centerIn: parent
-        visible: assetProbe.status === Image.Ready
-        source: Qt.resolvedUrl("assets/herdr.svg")
-        size: root.size
-        colorOverride: root.color
+    MultiEffect {
+        anchors.fill: parent
+        source: logo
+        visible: logo.status === Image.Ready
+        colorization: 1
+        colorizationColor: root.color
     }
 
     StyledText {
         anchors.fill: parent
-        visible: assetProbe.status !== Image.Ready
+        visible: logo.status !== Image.Ready
         text: "\u{F1719}"
         color: root.color
         font.family: "FiraCode Nerd Font"
