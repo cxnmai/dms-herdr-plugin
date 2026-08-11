@@ -28,6 +28,7 @@ PluginComponent {
                 size: root.iconSize
                 color: herdr.serverRunning ? Theme.widgetIconColor : Theme.surfaceVariantText
                 anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: -1
             }
 
             StyledText {
