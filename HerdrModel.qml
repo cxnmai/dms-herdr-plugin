@@ -7,6 +7,8 @@ QtObject {
     property bool actionPending: false
     property var agents: []
     property string lastError: ""
+    readonly property string _commandScope: "herdr."
+        + Date.now().toString(36) + "." + Math.random().toString(36).slice(2)
     property var _state: ({ polling: false, refreshQueued: false, pendingTarget: -1,
         pendingSince: 0, branchCache: ({}), branchPending: ({}) })
     property Timer _pollTimer: Timer {
@@ -21,7 +23,7 @@ QtObject {
             return
         }
         _state.polling = true
-        Proc.runCommand("herdr.status", ["herdr", "status", "server", "--json"],
+        Proc.runCommand(_commandScope + ".status", ["herdr", "status", "server", "--json"],
             function(stdout, exitCode) {
                 if (exitCode !== 0) {
                     root._failStatus("Unable to query the Herdr server")
@@ -62,7 +64,7 @@ QtObject {
         _state.pendingTarget = 0
         _state.pendingSince = Date.now()
         lastError = ""
-        Proc.runCommand("herdr.stop", ["herdr", "server", "stop"],
+        Proc.runCommand(_commandScope + ".stop", ["herdr", "server", "stop"],
             function(stdout, exitCode) {
                 if (exitCode !== 0) {
                     root._endAction("Unable to stop the Herdr server")
@@ -72,7 +74,7 @@ QtObject {
             })
     }
     function _readSnapshot() {
-        Proc.runCommand("herdr.snapshot", ["herdr", "api", "snapshot"],
+        Proc.runCommand(_commandScope + ".snapshot", ["herdr", "api", "snapshot"],
             function(stdout, exitCode) {
                 if (exitCode !== 0) {
                     root._failSnapshot("Unable to read the Herdr snapshot")
@@ -142,7 +144,7 @@ QtObject {
                 || (cached && Date.now() - cached.checkedAt < 30000))
             return
         _state.branchPending[directory] = true
-        Proc.runCommand("herdr.branch." + encodeURIComponent(directory),
+        Proc.runCommand(_commandScope + ".branch." + encodeURIComponent(directory),
             ["git", "-C", directory, "branch", "--show-current"],
             function(stdout, exitCode) {
                 delete root._state.branchPending[directory]
