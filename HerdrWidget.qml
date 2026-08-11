@@ -25,14 +25,14 @@ PluginComponent {
             spacing: Theme.spacingXS
 
             HerdrIcon {
-                size: Math.round(root.iconSize * 0.7)
+                size: Math.round(root.iconSize * 0.8)
                 color: herdr.serverRunning ? Theme.widgetIconColor : Theme.surfaceVariantText
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             StyledText {
                 visible: herdr.serverRunning
-                text: root.agentSummary
+                text: herdr.agents.length
                 font.pixelSize: Theme.barTextSize(root.barThickness,
                     root.barConfig?.fontScale, root.barConfig?.maximizeWidgetText)
                 color: Theme.widgetTextColor
@@ -46,7 +46,7 @@ PluginComponent {
             spacing: Theme.spacingXS
 
             HerdrIcon {
-                size: Math.round(root.iconSize * 0.7)
+                size: Math.round(root.iconSize * 0.8)
                 color: herdr.serverRunning ? Theme.widgetIconColor : Theme.surfaceVariantText
                 anchors.horizontalCenter: parent.horizontalCenter
             }
@@ -172,7 +172,8 @@ PluginComponent {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 text: herdr.actionPending ? "Stopping…" : "Stop Herdr"
-                iconName: "stop"
+                buttonHeight: 32
+                horizontalPadding: Theme.spacingM
                 enabled: !herdr.actionPending
                 backgroundColor: Theme.error
                 textColor: Theme.onPrimary
