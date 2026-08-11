@@ -9,7 +9,7 @@ PluginComponent {
 
     layerNamespacePlugin: "herdr"
     popoutWidth: 420
-    popoutHeight: 400
+    popoutHeight: 320
 
     readonly property string agentSummary: {
         const count = herdr.agents.length;
