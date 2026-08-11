@@ -25,7 +25,7 @@ PluginComponent {
             spacing: Theme.spacingXS
 
             HerdrIcon {
-                size: Math.round(root.iconSize * 0.8)
+                size: root.iconSize
                 color: herdr.serverRunning ? Theme.widgetIconColor : Theme.surfaceVariantText
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -46,7 +46,7 @@ PluginComponent {
             spacing: Theme.spacingXS
 
             HerdrIcon {
-                size: Math.round(root.iconSize * 0.8)
+                size: root.iconSize
                 color: herdr.serverRunning ? Theme.widgetIconColor : Theme.surfaceVariantText
                 anchors.horizontalCenter: parent.horizontalCenter
             }
