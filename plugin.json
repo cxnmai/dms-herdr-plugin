@@ -1,0 +1,15 @@
+{
+  "$schema": "https://danklinux.com/schemas/plugin.json",
+  "id": "herdr",
+  "name": "Herdr",
+  "description": "Monitor and control Herdr agents from DankBar",
+  "version": "1.0.0",
+  "author": "Chinmay Khaladkar",
+  "icon": "smart_toy",
+  "type": "widget",
+  "capabilities": ["dankbar-widget", "monitoring"],
+  "component": "./HerdrWidget.qml",
+  "requires_dms": ">=1.5.0",
+  "dependencies": ["herdr", "git"],
+  "permissions": ["process"]
+}
