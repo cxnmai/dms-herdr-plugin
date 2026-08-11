@@ -7,8 +7,8 @@ QtObject {
     property bool actionPending: false
     property var agents: []
     property string lastError: ""
-    property var _state: ({ polling: false, refreshQueued: false,
-        pendingTarget: -1, branchCache: ({}), branchPending: ({}) })
+    property var _state: ({ polling: false, refreshQueued: false, pendingTarget: -1,
+        pendingSince: 0, branchCache: ({}), branchPending: ({}) })
     property Timer _pollTimer: Timer {
         interval: 3000
         running: true
@@ -24,12 +24,12 @@ QtObject {
         Proc.runCommand("herdr.status", ["herdr", "status", "server", "--json"],
             function(stdout, exitCode) {
                 if (exitCode !== 0) {
-                    root._failPoll("Unable to query the Herdr server")
+                    root._failStatus("Unable to query the Herdr server")
                     return
                 }
                 var status = root._parseObject(stdout)
                 if (!status || typeof status.running !== "boolean") {
-                    root._failPoll("Herdr returned an invalid server status")
+                    root._failStatus("Herdr returned an invalid server status")
                     return
                 }
                 root._applyServerState(status.running)
@@ -46,14 +46,13 @@ QtObject {
             return
         actionPending = true
         _state.pendingTarget = 1
+        _state.pendingSince = Date.now()
         lastError = ""
         try {
             Quickshell.execDetached(["herdr", "server"])
             refresh()
         } catch (error) {
-            actionPending = false
-            _state.pendingTarget = -1
-            lastError = "Unable to start the Herdr server"
+            root._endAction("Unable to start the Herdr server")
         }
     }
     function stopServer() {
@@ -61,13 +60,12 @@ QtObject {
             return
         actionPending = true
         _state.pendingTarget = 0
+        _state.pendingSince = Date.now()
         lastError = ""
         Proc.runCommand("herdr.stop", ["herdr", "server", "stop"],
             function(stdout, exitCode) {
                 if (exitCode !== 0) {
-                    root.actionPending = false
-                    root._state.pendingTarget = -1
-                    root.lastError = "Unable to stop the Herdr server"
+                    root._endAction("Unable to stop the Herdr server")
                     return
                 }
                 root.refresh()
@@ -77,14 +75,14 @@ QtObject {
         Proc.runCommand("herdr.snapshot", ["herdr", "api", "snapshot"],
             function(stdout, exitCode) {
                 if (exitCode !== 0) {
-                    root._failPoll("Unable to read the Herdr snapshot")
+                    root._failSnapshot("Unable to read the Herdr snapshot")
                     return
                 }
                 var response = root._parseObject(stdout)
                 var snapshot = response && response.result && response.result.snapshot
                 if (!snapshot || !Array.isArray(snapshot.agents)
                         || !Array.isArray(snapshot.workspaces)) {
-                    root._failPoll("Herdr returned an invalid snapshot")
+                    root._failSnapshot("Herdr returned an invalid snapshot")
                     return
                 }
                 root.lastError = ""
@@ -97,10 +95,12 @@ QtObject {
         if (!running)
             agents = []
         if ((_state.pendingTarget === 1 && running)
-                || (_state.pendingTarget === 0 && !running)) {
-            actionPending = false
-            _state.pendingTarget = -1
-        }
+                || (_state.pendingTarget === 0 && !running))
+            root._endAction("")
+        else if (actionPending && _state.pendingSince > 0
+                && Date.now() - _state.pendingSince >= 15000)
+            root._endAction(_state.pendingTarget === 1
+                ? "Herdr server did not start" : "Herdr server did not stop")
     }
     function _applySnapshot(snapshot) {
         var contexts = {}
@@ -179,11 +179,18 @@ QtObject {
     function _string(value) {
         return value === undefined || value === null ? "" : String(value)
     }
-    function _failPoll(message) {
-        serverRunning = false
-        agents = []
+    function _endAction(error) {
         actionPending = false
         _state.pendingTarget = -1
+        _state.pendingSince = 0
+        if (error)
+            lastError = error
+    }
+    function _failStatus(message) {
+        _endAction(message)
+        _finishPoll()
+    }
+    function _failSnapshot(message) {
         lastError = message
         _finishPoll()
     }
